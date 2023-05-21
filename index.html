@@ -1,0 +1,39 @@
+<title>Make Stickers!</title>
+<canvas style="display: block"></canvas>
+<input type="file"/>
+<script>
+    const input = document.querySelector('input');
+    const canvas = document.querySelector('canvas');
+    const ctx = canvas.getContext('2d');
+    function readInputFile(e) {
+        var file = e.target.files;
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            var img = new Image();
+            img.onload = function () {
+                if (img.width > img.height) {
+                    width = 512;
+                    height = 512*img.height/img.width;           
+                } else {
+                    height = 512;
+                    width = 512*img.width/img.height;        
+                } 
+                canvas.width = width;
+                canvas.height = height;
+                ctx.drawImage(img, 0, 0, width, height);
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file[0]);
+    }
+
+    function download() {
+        const $link = document.createElement("a");
+        $link.download = "sticker.png";
+        $link.href = canvas.toDataURL("image/png");
+        $link.click();
+    }
+
+    input.addEventListener('change', readInputFile);
+    canvas.addEventListener('click', download);
+</script>
